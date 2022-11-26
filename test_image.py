@@ -4,7 +4,7 @@ import numpy as np
 from model import Generator
 from PIL import Image
 import torch
-import torchvision.transforms as transforms 
+import torchvision.transforms as transforms
 
 
 
@@ -28,9 +28,9 @@ if __name__ == '__main__':
 		raise Exception("No GPU available")
 	with torch.no_grad():
 		generator_net = Generator(upscale_factor = upscale_factor, num_blocks=16).eval()
-		
 
-		saved_G_weight = torch.load(weight) 
+
+		saved_G_weight = torch.load(weight)
 		generator_net.load_state_dict(saved_G_weight)
 
 
@@ -47,7 +47,7 @@ if __name__ == '__main__':
 			generator_net.cuda()
 
 		sr_tensor = generator_net(img_tensor)
-		
+
 		sr_transform = transforms.Compose([
 			transforms.Normalize((-1,-1,-1),(2,2,2)),
 			transforms.ToPILImage()
@@ -59,7 +59,7 @@ if __name__ == '__main__':
 
 		sr_img.save(out_dir+'/sr_' + input_img[input_img.rfind('/')+1:])
 
-		w, h = img.size 
+		w, h = img.size
 		w *= upscale_factor
 		h *= upscale_factor
 
@@ -67,4 +67,3 @@ if __name__ == '__main__':
 		lr_img = upscale(img)
 		lr_img.save(out_dir+'/bicubic_' + input_img[input_img.rfind('/')+1:])
 		img.save(out_dir+'/lr_'+input_img[input_img.rfind('/')+1:])
-

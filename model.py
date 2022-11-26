@@ -104,3 +104,5 @@ class Discriminator(nn.Module):
 # 	summary(dnet, (3,96,96))
 # 	summary(gnet,(3,24,24))
 
+
+

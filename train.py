@@ -21,6 +21,7 @@ parser.add_argument('--mode', type=str, default='adversarial', choices=['adversa
 parser.add_argument('--pretrain', type=str, default=None, help='load pretrained generator model')
 parser.add_argument('--cuda', action='store_true', help='Using GPU to train')
 parser.add_argument('--out_dir', type=str, default='./', help='The path for checkpoints and outputs')
+parser.add_argument('--gpu_num', type=int, default=4, metavar='N', help='number of gpus')
 
 sr_transform = transforms.Compose([
 	transforms.Normalize((-1,-1,-1),(2,2,2)),
@@ -37,6 +38,9 @@ if __name__ == '__main__':
 	upscale_factor = opt.upscale_factor
 	generator_lr = 0.0001
 	discriminator_lr = 0.0001
+    gpus = []
+    for i in range(opt.gpu_num):
+        gpus.append(i)
 
 	check_points_dir = opt.out_dir + 'check_points/'
 	weights_dir = opt.out_dir + 'weights/'
@@ -59,13 +63,16 @@ if __name__ == '__main__':
 	discriminator_optimizer = optim.Adam(discriminator_net.parameters(), lr=discriminator_lr)
 	feature_extractor = FeatureExtractor()
 
-
 	if torch.cuda.is_available() and opt.cuda:
 		generator_net.cuda()
 		discriminator_net.cuda()
 		adversarial_criterion.cuda()
 		content_criterion.cuda()
 		feature_extractor.cuda()
+
+        #using data parallel
+        net = torch.nn.DataParallel(net, device_ids=gpus)
+        torch.backends.cudnn.benchmark = True
 
 	generator_running_loss = 0.0
 	generator_losses = []
@@ -114,7 +121,7 @@ if __name__ == '__main__':
 
 
 				generator_loss = content_loss + 2e-8*tv_reg(sr_img) #  + 0.006*perceptual_loss
-				
+
 
 				generator_loss.backward()
 				generator_optimizer.step()
@@ -126,10 +133,10 @@ if __name__ == '__main__':
 
 			torch.save(generator_net.state_dict(), weights_dir+ 'G_epoch_%d.pth' % (epoch))
 			generator_losses.append((epoch,generator_running_loss/len(train_set)))
-	
+
 
 			if epoch % 50 ==0:
-				
+
 				with torch.no_grad():
 					cur_epoch_dir = imgout_dir+str(epoch)+'/'
 					os.makedirs(cur_epoch_dir, exist_ok=True)
@@ -159,7 +166,7 @@ if __name__ == '__main__':
 
 				check_point = {'generator': generator_net.state_dict(), 'generator_optimizer': generator_optimizer.state_dict(),
 				 'generator_losses': generator_losses ,'PSNR_valid': PSNR_valid}
-				torch.save(check_point, check_points_dir + 'check_point_epoch_%d.pth' % (epoch))	
+				torch.save(check_point, check_points_dir + 'check_point_epoch_%d.pth' % (epoch))
 				np.savetxt(opt.out_dir + "generator_losses", generator_losses, fmt='%i,%f')
 				np.savetxt(opt.out_dir + "PSNR", PSNR_valid, fmt='%i, %f')
 
@@ -204,8 +211,8 @@ if __name__ == '__main__':
 				content_loss = content_criterion(sr_img, hr_img)
 
 
-				generator_loss =  0.006*perceptual_loss + 1e-3*adversarial_loss  + content_loss 
-				
+				generator_loss =  0.006*perceptual_loss + 1e-3*adversarial_loss  + content_loss
+
 
 				generator_loss.backward()
 				generator_optimizer.step()
@@ -213,7 +220,7 @@ if __name__ == '__main__':
 				#===================== train discriminator =====================
 				discriminator_loss = (adversarial_criterion(discriminator_net(hr_img), hr_labels) + \
 									adversarial_criterion(discriminator_net(sr_img.detach()), sr_labels))/2
-				
+
 				discriminator_loss.backward()
 				discriminator_optimizer.step()
 
@@ -224,10 +231,10 @@ if __name__ == '__main__':
 			torch.save(generator_net.state_dict(), weights_dir+ 'G_epoch_%d.pth' % (epoch))
 			generator_losses.append((epoch,generator_running_loss/len(train_set)))
 			discriminator_losses.append((epoch,discriminator_running_loss/len(train_set)))
-			
- 
+
+
 			if epoch % 50 ==0:
-				
+
 				with torch.no_grad():
 					cur_epoch_dir = imgout_dir+str(epoch)+'/'
 					os.makedirs(cur_epoch_dir, exist_ok=True)
@@ -259,8 +266,7 @@ if __name__ == '__main__':
 				check_point = {'generator': generator_net.state_dict(), 'generator_optimizer': generator_optimizer.state_dict(),
 				'discriminator': discriminator_net.state_dict(), 'discriminator_optimizer': discriminator_optimizer.state_dict(),
 				'discriminator_losses': discriminator_losses, 'generator_losses': generator_losses ,'PSNR_valid': PSNR_valid}
-				torch.save(check_point, check_points_dir + 'check_point_epoch_%d.pth' % (epoch))	
+				torch.save(check_point, check_points_dir + 'check_point_epoch_%d.pth' % (epoch))
 				np.savetxt(opt.out_dir + "generator_losses", generator_losses, fmt='%i,%f')
 				np.savetxt(opt.out_dir + "discriminator_losses", discriminator_losses, fmt='%i, %f')
 				np.savetxt(opt.out_dir + "PSNR", PSNR_valid, fmt='%i, %f')
-
