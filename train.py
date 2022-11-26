@@ -38,9 +38,10 @@ if __name__ == '__main__':
 	upscale_factor = opt.upscale_factor
 	generator_lr = 0.0001
 	discriminator_lr = 0.0001
-    gpus = []
-    for i in range(opt.gpu_num):
-        gpus.append(i)
+
+	gpus = []
+	for i in range(opt.gpu_num):
+		gpus.append(i)
 
 	check_points_dir = opt.out_dir + 'check_points/'
 	weights_dir = opt.out_dir + 'weights/'
@@ -70,9 +71,9 @@ if __name__ == '__main__':
 		content_criterion.cuda()
 		feature_extractor.cuda()
 
-        #using data parallel
-        net = torch.nn.DataParallel(net, device_ids=gpus)
-        torch.backends.cudnn.benchmark = True
+		#using data parallel
+		net = torch.nn.DataParallel(net, device_ids=gpus)
+		torch.backends.cudnn.benchmark = True
 
 	generator_running_loss = 0.0
 	generator_losses = []
@@ -94,7 +95,6 @@ if __name__ == '__main__':
 		saved_G_state = torch.load(str(opt.pretrain))
 		# generator_net.load_state_dict(saved_G_state['generator'])
 		generator_net.load_state_dict(saved_G_state)
-
 
 	## Pre-train the generator
 	if opt.mode == 'generator':
