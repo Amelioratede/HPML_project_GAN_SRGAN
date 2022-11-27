@@ -307,8 +307,8 @@ if __name__ == '__main__':
 
 		gpu_num = torch.cuda.device_count()
 		print(f'using {gpu_num} GPUs:')
-        	print(f'batch size = {opt.bs}')
-        	print(f'learning rate = {opt.lr}')
+		print(f'batch size = {opt.bs}')
+		print(f'learning rate = {opt.lr}')
 		print(f'total_time:{total_time_list}')
 		print(f'train_time:{train_time_list}')
 		print(f'compute_time:{compute_time_list}')
