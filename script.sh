@@ -3,7 +3,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=20
 #SBATCH --mem=16GB
-#SBATCH --time=00:20:00
+#SBATCH --time=01:00:00
 #SBATCH --output=6epochtest.txt
 #SBATCH --gres=gpu:rtx8000:4
 #SBATCH --mail-type=END
