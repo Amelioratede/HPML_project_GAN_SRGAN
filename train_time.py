@@ -77,10 +77,6 @@ if __name__ == '__main__':
 		adversarial_criterion.cuda()
 		content_criterion.cuda()
 		feature_extractor.cuda()
-		print('using DataParallel')
-		generator_net = torch.nn.DataParallel(generator_net)
-		discriminator_net = torch.nn.DataParallel(discriminator_net)
-		torch.backends.cudnn.benchmark = True
 	
 	
 	generator_running_loss = 0.0
@@ -104,7 +100,12 @@ if __name__ == '__main__':
 		saved_G_state = torch.load(str(opt.pretrain))
 		# generator_net.load_state_dict(saved_G_state['generator'])
 		generator_net.load_state_dict(saved_G_state)
-
+		
+	if opt.dp:
+		print('using DataParallel')
+		generator_net = torch.nn.DataParallel(generator_net)
+		discriminator_net = torch.nn.DataParallel(discriminator_net)
+		torch.backends.cudnn.benchmark = True
 
 	## Pre-train the generator
 	if opt.mode == 'generator':
