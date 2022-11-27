@@ -10,6 +10,9 @@ from torch.utils.data import DataLoader
 from model import Generator, Discriminator
 from utils import DIV2K_train_set, DIV2K_valid_set, FeatureExtractor, TV_Loss
 import torchvision.transforms as transforms
+from PIL import ImageFile
+
+ImageFile.LOAD_TRUNCATED_IMAGES=True
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--trainset_dir', type=str, default='./data/DIV2K_train_HR/', help='training dataset path')
@@ -72,7 +75,8 @@ if __name__ == '__main__':
 		feature_extractor.cuda()
 
 		#using data parallel
-		net = torch.nn.DataParallel(net, device_ids=gpus)
+		net = torch.nn.DataParallel(generator_net, device_ids=gpus)
+		net = torch.nn.DataParallel(discriminator_net, device_ids=gpus)
 		torch.backends.cudnn.benchmark = True
 
 	generator_running_loss = 0.0
