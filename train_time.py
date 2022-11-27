@@ -40,7 +40,7 @@ lr_transform = transforms.Compose([
 
 opt = parser.parse_args()
 upscale_factor = opt.upscale_factor
-generator_lr = 0.0001
+generator_lr = opt.lr
 discriminator_lr = 0.0001
 
 check_points_dir = opt.out_dir + 'check_points/'
@@ -307,6 +307,8 @@ if __name__ == '__main__':
 
 		gpu_num = torch.cuda.device_count()
 		print(f'using {gpu_num} GPUs:')
+        	print(f'batch size = {opt.bs}')
+        	print(f'learning rate = {opt.lr}')
 		print(f'total_time:{total_time_list}')
 		print(f'train_time:{train_time_list}')
 		print(f'compute_time:{compute_time_list}')
