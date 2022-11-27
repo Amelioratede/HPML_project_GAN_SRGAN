@@ -1,0 +1,35 @@
+/opt/slurm/data/slurmd/job27383493/slurm_script: line 17: cd: project: No such file or directory
+/home/yl8798/.local/lib/python3.8/site-packages/torchvision/transforms/transforms.py:332: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed$  warnings.warn(
+/home/yl8798/.local/lib/python3.8/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and will be removed in 0.15, please u$  warnings.warn(
+/home/yl8798/.local/lib/python3.8/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and $  warnings.warn(msg)
+using DataParallel
+adversarial training
+epoch: 1/6
+^M  0%|          | 0/25 [00:00<?, ?it/s]^MG: 0.000000    D: 0.000000:   0%|          | 0/25 [00:00<?, ?it/s]^MG: 0.000000    D: 0.000000:   4%|▍         | 1/25 [00:12<05:07, 12.80s/it]$epoch: 2/6
+^M  0%|          | 0/25 [00:00<?, ?it/s]^MG: 0.186726    D: 0.112581:   0%|          | 0/25 [00:00<?, ?it/s]^MG: 0.186726    D: 0.112581:   4%|▍         | 1/25 [00:03<01:24,  3.50s/it]$epoch: 3/6
+^M  0%|          | 0/25 [00:00<?, ?it/s]^MG: 0.110912    D: 0.072328:   0%|          | 0/25 [00:00<?, ?it/s]^MG: 0.110912    D: 0.072328:   4%|▍         | 1/25 [00:03<01:18,  3.28s/it]$epoch: 4/6
+^M  0%|          | 0/25 [00:00<?, ?it/s]^MG: 0.090703    D: 0.192389:   0%|          | 0/25 [00:00<?, ?it/s]^MG: 0.090703    D: 0.192389:   4%|▍         | 1/25 [00:03<01:20,  3.35s/it]$epoch: 5/6
+^M  0%|          | 0/25 [00:00<?, ?it/s]^MG: 0.078640    D: 0.072803:   0%|          | 0/25 [00:00<?, ?it/s]^MG: 0.078640    D: 0.072803:   4%|▍         | 1/25 [00:03<01:16,  3.19s/it]$epoch: 6/6
+^M  0%|          | 0/25 [00:00<?, ?it/s]^MG: 0.069976    D: 0.120500:   0%|          | 0/25 [00:00<?, ?it/s]^MG: 0.069976    D: 0.120500:   4%|▍         | 1/25 [00:03<01:18,  3.26s/it]$^M  0%|          | 0/100 [00:00<?, ?it/s]^MImg: 0   PSNR: 0.000000:   0%|          | 0/100 [00:00<?, ?it/s]^MImg: 0   PSNR: 0.000000:   1%|          | 1/100 [00:02<03:23,  2.06s/it]^MI$using 4 GPUs:
+total_time:[28.947582820430398, 20.0673348326236, 20.27586456388235, 20.38736904412508, 20.11122253909707, 20.217443047091365]
+train_time:[12.101099101826549, 3.5468470826745033, 3.6017199903726578, 3.583130843937397, 3.5686551593244076, 3.5291852299124002]
+compute_time:[8.086410062387586, 0.6606990117579699, 0.6841509081423283, 0.653646681457758, 0.6574117373675108, 0.6576523464173079]
+generator_time:[1.9639959931373596, 0.8453258201479912, 0.8581990469247103, 0.8592894319444895, 0.854147844016552, 0.840234998613596]
+discriminator_time:[0.07984842173755169, 0.08134034462273121, 0.09004977159202099, 0.0905364342033863, 0.09000971354544163, 0.09061568230390549]
+/home/yl8798/.local/lib/python3.8/site-packages/torchvision/transforms/transforms.py:332: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed$  warnings.warn(
+/home/yl8798/.local/lib/python3.8/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and will be removed in 0.15, please u$  warnings.warn(
+/home/yl8798/.local/lib/python3.8/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and $  warnings.warn(msg)
+using DataParallel
+adversarial training
+epoch: 1/6
+^M  0%|          | 0/13 [00:00<?, ?it/s]^MG: 0.000000    D: 0.000000:   0%|          | 0/13 [00:00<?, ?it/s]^MG: 0.000000    D: 0.000000:   8%|▊         | 1/13 [00:14<02:50, 14.19s/it]$epoch: 2/6
+^M  0%|          | 0/13 [00:00<?, ?it/s]^MG: 0.234262    D: 0.116041:   0%|          | 0/13 [00:00<?, ?it/s]^MG: 0.234262    D: 0.116041:   8%|▊         | 1/13 [00:06<01:16,  6.34s/it]$epoch: 3/6
+^M  0%|          | 0/13 [00:00<?, ?it/s]^MG: 0.117264    D: 0.091420:   0%|          | 0/13 [00:00<?, ?it/s]^MG: 0.117264    D: 0.091420:   8%|▊         | 1/13 [00:06<01:13,  6.09s/it]$epoch: 4/6
+^M  0%|          | 0/13 [00:00<?, ?it/s]^MG: 0.095221    D: 0.135651:   0%|          | 0/13 [00:00<?, ?it/s]^MG: 0.095221    D: 0.135651:   8%|▊         | 1/13 [00:06<01:16,  6.37s/it]$epoch: 5/6
+^M  0%|          | 0/13 [00:00<?, ?it/s]^MG: 0.087705    D: 0.063701:   0%|          | 0/13 [00:00<?, ?it/s]^MG: 0.087705    D: 0.063701:   8%|▊         | 1/13 [00:06<01:14,  6.19s/it]$epoch: 6/6
+^M  0%|          | 0/13 [00:00<?, ?it/s]^MG: 0.078378    D: 0.074170:   0%|          | 0/13 [00:00<?, ?it/s]^MG: 0.078378    D: 0.074170:   8%|▊         | 1/13 [00:06<01:12,  6.03s/it]$^M  0%|          | 0/100 [00:00<?, ?it/s]^MImg: 0   PSNR: 0.000000:   0%|          | 0/100 [00:00<?, ?it/s]^MImg: 0   PSNR: 0.000000:   1%|          | 1/100 [00:01<03:10,  1.93s/it]^MI$using 4 GPUs:
+total_time:[22.546873215585947, 20.350250808522105, 19.90672267973423, 20.0197442676872, 20.001477444544435, 19.886115742847323]
+train_time:[12.492443259805441, 2.8869397453963757, 2.8834620639681816, 2.8849514443427324, 2.8821002785116434, 2.878817757591605]
+compute_time:[7.395100941881537, 0.36232198774814606, 0.36060021445155144, 0.3608636502176523, 0.358905466273427, 0.35897719860076904]
+generator_time:[3.4504784028977156, 0.7566594555974007, 0.7564632203429937, 0.7544181942939758, 0.7576466985046864, 0.7573734316974878]
+discriminator_time:[0.05767602100968361, 0.08025533705949783, 0.08010045252740383, 0.08007426932454109, 0.08021117746829987, 0.08030093088746071]
