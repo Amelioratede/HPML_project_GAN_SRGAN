@@ -25,6 +25,8 @@ parser.add_argument('--out_dir', type=str, default='./', help='The path for chec
 parser.add_argument('--lr', type=float, default=0.0001, help='generator learning rate')
 parser.add_argument('--bs', type=int, default=32, help='batch size')
 
+
+
 sr_transform = transforms.Compose([
 	transforms.Normalize((-1,-1,-1),(2,2,2)),
 	transforms.ToPILImage()
@@ -34,6 +36,12 @@ sr_transform = transforms.Compose([
 lr_transform = transforms.Compose([
 	transforms.ToPILImage()
 	])
+
+
+opt = parser.parse_args()
+upscale_factor = opt.upscale_factor
+generator_lr = 0.0001
+discriminator_lr = 0.0001
 
 check_points_dir = opt.out_dir + 'check_points/'
 weights_dir = opt.out_dir + 'weights/'
@@ -62,29 +70,24 @@ feature_extractor = FeatureExtractor()
 
 
 if __name__ == '__main__':
-	opt = parser.parse_args()
-	upscale_factor = opt.upscale_factor
-	generator_lr = 0.0001
-	discriminator_lr = 0.0001
-
 	
-
-
 	if torch.cuda.is_available() and opt.cuda:
 		generator_net.cuda()
 		discriminator_net.cuda()
 		adversarial_criterion.cuda()
 		content_criterion.cuda()
 		feature_extractor.cuda()
-
+		print('using DataParallel')
+		generator_net = torch.nn.DataParallel(generator_net)
+		discriminator_net = torch.nn.DataParallel(discriminator_net)
+		torch.backends.cudnn.benchmark = True
+	
+	
 	generator_running_loss = 0.0
 	generator_losses = []
 	discriminator_losses = []
 	PSNR_valid = []
-    
-    net = torch.nn.DataParallel(net)
-    torch.backends.cudnn.benchmark = True
-
+    	
 	if opt.resume != 0:
 		check_point = torch.load(check_points_dir + "check_point_epoch_" + str(opt.resume)+'.pth')
 		generator_net.load_state_dict(check_point['generator'])
@@ -97,7 +100,7 @@ if __name__ == '__main__':
 			discriminator_losses = check_point['discriminator_losses']
 
 	if opt.pretrain != None:
-        print('loading pre-trained SR ResNet')
+		print('loading pre-trained SR ResNet')
 		saved_G_state = torch.load(str(opt.pretrain))
 		# generator_net.load_state_dict(saved_G_state['generator'])
 		generator_net.load_state_dict(saved_G_state)
@@ -105,7 +108,7 @@ if __name__ == '__main__':
 
 	## Pre-train the generator
 	if opt.mode == 'generator':
-        print('pre-training the generator')
+		print('pre-training the generator')
 		for epoch in range(1+opt.resume, opt.epochs+1):
 			print("epoch: %i/%i" % (int(epoch), int(opt.epochs)))
 			generator_net.train()
@@ -114,37 +117,27 @@ if __name__ == '__main__':
 			generator_running_loss = 0.0
 
 			for hr_img, lr_img in training_bar:
-
-
 				if torch.cuda.is_available() and opt.cuda:
-
 					hr_img = hr_img.cuda()
 					lr_img = lr_img.cuda()
 
 				sr_img = generator_net(lr_img)
 
-
 				content_loss = content_criterion(sr_img, hr_img)
 				perceptual_loss = content_criterion(feature_extractor(sr_img), feature_extractor(hr_img))
 
-
 				generator_loss = content_loss + 2e-8*tv_reg(sr_img) #  + 0.006*perceptual_loss
 				
-
 				generator_loss.backward()
 				generator_optimizer.step()
 
 				generator_running_loss += generator_loss.item() * hr_img.size(0)
 				generator_net.zero_grad()
 
-
-
 			torch.save(generator_net.state_dict(), weights_dir+ 'G_epoch_%d.pth' % (epoch))
 			generator_losses.append((epoch,generator_running_loss/len(train_set)))
 	
-
 			if epoch  ==opt.epochs:
-				
 				with torch.no_grad():
 					cur_epoch_dir = imgout_dir+str(epoch)+'/'
 					os.makedirs(cur_epoch_dir, exist_ok=True)
@@ -168,32 +161,27 @@ if __name__ == '__main__':
 						sr_img.save(cur_epoch_dir+'sr_' + str(img_count)+'.png')
 						lr_img.save(cur_epoch_dir+'lr_'+str(img_count)+'.png')
 
-
 					psnr_avg /= img_count
 					PSNR_valid.append((epoch, psnr_avg.cpu()))
 
-				check_point = {'generator': generator_net.state_dict(), 'generator_optimizer': generator_optimizer.state_dict(),
-				 'generator_losses': generator_losses ,'PSNR_valid': PSNR_valid}
+				check_point = {'generator': generator_net.state_dict(), 'generator_optimizer': generator_optimizer.state_dict(),'generator_losses': generator_losses ,'PSNR_valid': PSNR_valid}
 				torch.save(check_point, check_points_dir + 'check_point_epoch_%d.pth' % (epoch))	
 				np.savetxt(opt.out_dir + "generator_losses", generator_losses, fmt='%i,%f')
 				np.savetxt(opt.out_dir + "PSNR", PSNR_valid, fmt='%i, %f')
 
 
-
-
 	## Adversarial training
-
 	if opt.mode == 'adversarial':
-    total_time_list=[]
-    train_time_list=[]
-    compute_time_list=[]
-    generator_time_list=[]
-    discriminator_time_list=[]
+		total_time_list=[]
+		train_time_list=[]
+		compute_time_list=[]
+		generator_time_list=[]
+		discriminator_time_list=[]
     
-        print('adversarial training')
+		print('adversarial training')
 		discriminator_running_loss = 0.0
         
-        total_time_start=time.perf_counter()
+		total_time_start=time.perf_counter()
         
 		for epoch in range(1+opt.resume, opt.epochs+1):
 			print("epoch: %i/%i" % (int(epoch), int(opt.epochs)))
@@ -205,12 +193,12 @@ if __name__ == '__main__':
 			generator_running_loss = 0.0
 			discriminator_running_loss = 0.0
             
-            total_time=0.0
-            train_time=0.0
-            compute_time=0.0
-            generator_time=0.0
-            discriminator_time=0.0
-            total_time_start=time.perf_counter()
+			total_time=0.0
+			train_time=0.0
+			compute_time=0.0
+			generator_time=0.0
+			discriminator_time=0.0
+			total_time_start=time.perf_counter()
 			for hr_img, lr_img in training_bar:
 				hr_labels = torch.from_numpy(np.random.random((hr_img.size(0),1)) * 0.1 + 0.95).float()
 				# sr_labels = torch.from_numpy(np.random.random((hr_img.size(0),1)) * 0.05).float()
@@ -219,7 +207,7 @@ if __name__ == '__main__':
 				# hr_labels = torch.ones(hr_img.size(0), 1).float()
 				sr_labels = torch.zeros(hr_img.size(0), 1).float()
                 
-                train_start_time = time.perf_counter()
+				train_start_time = time.perf_counter()
                 
 				if torch.cuda.is_available() and opt.cuda:
 					hr_img = hr_img.cuda()
@@ -231,9 +219,9 @@ if __name__ == '__main__':
 
 				generator_net.zero_grad()
 				discriminator_net.zero_grad()
-                discriminator_output=discriminator_net(sr_img)
+				discriminator_output=discriminator_net(sr_img)
                 
-                generator_start_time = time.perf_counter()
+				generator_start_time = time.perf_counter()
                 
 
 				#===================== train generator =====================
@@ -248,32 +236,31 @@ if __name__ == '__main__':
 				generator_loss.backward()
 				generator_optimizer.step()
                 
-                discriminator_start_time = time.perf_counter()
+				discriminator_start_time = time.perf_counter()
 
 				#===================== train discriminator =====================
-				discriminator_loss = (adversarial_criterion(discriminator_net(hr_img), hr_labels) + \
-									adversarial_criterion(discriminator_net(sr_img.detach()), sr_labels))/2
+				discriminator_loss = (adversarial_criterion(discriminator_net(hr_img), hr_labels) + adversarial_criterion(discriminator_net(sr_img.detach()), sr_labels))/2
 				
 				discriminator_loss.backward()
 				discriminator_optimizer.step()
                 
-                train_end_time = time.perf_counter()
+				train_end_time = time.perf_counter()
 
 				generator_running_loss += generator_loss.item() * hr_img.size(0)
 				discriminator_running_loss += discriminator_loss.item() * hr_img.size(0)
                 
                 
-                train_time+=train_end_time-train_start_time
-                compute_time+=generator_start_time-train_start_time
-                generator_time+=discriminator_start_time-generator_start_time
-                discriminator_time=train_end_time-discriminator_start_time
+				train_time+=train_end_time-train_start_time
+				compute_time+=generator_start_time-train_start_time
+				generator_time+=discriminator_start_time-generator_start_time
+				discriminator_time=train_end_time-discriminator_start_time
 
-            total_time=time.perf_counter()-total_time_start
-            total_time_list.append(total_time)
-            train_time_list.append(train_time)
-            compute_time_list.append(compute_time)
-            generator_time_list.append(generator_time)
-            discriminator_time_list.append(discriminator_time)
+			total_time=time.perf_counter()-total_time_start
+			total_time_list.append(total_time)
+			train_time_list.append(train_time)
+			compute_time_list.append(compute_time)
+			generator_time_list.append(generator_time)
+			discriminator_time_list.append(discriminator_time)
             
 			torch.save(generator_net.state_dict(), weights_dir+ 'G_epoch_%d.pth' % (epoch))
 			generator_losses.append((epoch,generator_running_loss/len(train_set)))
@@ -318,10 +305,10 @@ if __name__ == '__main__':
 				np.savetxt(opt.out_dir + "discriminator_losses", discriminator_losses, fmt='%i, %f')
 				np.savetxt(opt.out_dir + "PSNR", PSNR_valid, fmt='%i, %f')
 
-    gpu_num = torch.cuda.device_count()
-    print(f'using {gpu_num} GPUs:')
-    print(f'total_time:{total_time_list}')
-    print(f'train_time:{train_time_list}')
-    print(f'compute_time:{compute_time_list}')
-    print(f'generator_time:{generator_time_list}')
-    print(f'discriminator_time:{discriminator_time_list}')
+		gpu_num = torch.cuda.device_count()
+		print(f'using {gpu_num} GPUs:')
+		print(f'total_time:{total_time_list}')
+		print(f'train_time:{train_time_list}')
+		print(f'compute_time:{compute_time_list}')
+		print(f'generator_time:{generator_time_list}')
+		print(f'discriminator_time:{discriminator_time_list}')
