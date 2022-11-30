@@ -24,7 +24,7 @@ parser.add_argument('--cuda', action='store_true', help='Using GPU to train')
 parser.add_argument('--out_dir', type=str, default='./', help='The path for checkpoints and outputs')
 parser.add_argument('--lr', type=float, default=0.0001, help='generator learning rate')
 parser.add_argument('--bs', type=int, default=32, help='batch size')
-
+parser.add_argument('--dp', action='store_true', default=False, help='Using DataParallel')
 
 
 sr_transform = transforms.Compose([
@@ -77,6 +77,7 @@ if __name__ == '__main__':
 		adversarial_criterion.cuda()
 		content_criterion.cuda()
 		feature_extractor.cuda()
+		
 	
 	
 	generator_running_loss = 0.0
@@ -100,7 +101,7 @@ if __name__ == '__main__':
 		saved_G_state = torch.load(str(opt.pretrain))
 		# generator_net.load_state_dict(saved_G_state['generator'])
 		generator_net.load_state_dict(saved_G_state)
-		
+
 	if opt.dp:
 		print('using DataParallel')
 		generator_net = torch.nn.DataParallel(generator_net)
