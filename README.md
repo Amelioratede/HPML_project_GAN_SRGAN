@@ -1,6 +1,8 @@
 SRGAN-PyTorch
 ============================
-A Pytorch implementation of SRGAN based on the paper [Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network](https://arxiv.org/abs/1609.04802).
+Introduction
+----------------------------
+This project is a Pytorch implementation of SRGAN based on the paper [Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network](https://arxiv.org/abs/1609.04802). We implement data parallel, distributed data parallel, and lighting in HPC server and compared the PSNR\/SSIM of the results of Bicubic interpolation, SRResNet, and SRGAN on RTX8000 with one or multipile GPUs.
 
 Requirement
 ----------------------------
