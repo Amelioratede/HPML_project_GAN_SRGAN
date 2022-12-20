@@ -17,6 +17,11 @@ Requirement
 
 Usage
 ----------------------------
+### Model
+The SRGAN model is implemented in model.py, including ResidualBlock, Generator, Discriminator.
+
+### Processing of datasets
+utils.py is used to pre-process dataset image from DIV2K, cropping into training_set, validation_set, and adding FeatureExtractor
 
 ### Training
 
@@ -45,6 +50,8 @@ optional arguments:
                         apply adversarial training
   --pretrain PRETRAIN   load pretrained generator model
   --cuda                Using GPU to train
+  --dp                  Using data parallel
+  --ddp                 Using distributed data parallel
 ```
 
 ### Testing
