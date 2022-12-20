@@ -23,13 +23,13 @@ Usage
 Download the data to the ./data/ folder. The [pretrained weight of SRResNet](https://drive.google.com/file/d/126GzYaRBprQYju1g0WGVF_5UvbMIYkh3/view?usp=sharing) is optional
 Run the script train.py
 ```
-$ python train.py --trainset_dir $TRAINDIR --validset_dir $VALIDDIR --upscale_factor 4 --pretrain SRResNet_weight.pth --cuda
+$ python train_time.py --trainset_dir $TRAINDIR --validset_dir $VALIDDIR --upscale_factor 4 --pretrain SRResNet_weight.pth --cuda
 
 usage: train.py [-h] [--trainset_dir TRAINSET_DIR]
                 [--validset_dir VALIDSET_DIR] [--upscale_factor {2,4,8}]
                 [--epochs EPOCHS] [--resume RESUME]
                 [--mode {adversarial,generator}] [--pretrain PRETRAIN]
-                [--cuda]
+                [--cuda] [--dp] [--ddp]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -111,6 +111,12 @@ Sample Results
 
 #### SRGAN
 ![sample3_sr](https://github.com/Maggiking/SRGAN-PyTorch/blob/master/images/sample3_sr.png "SRGAN")   
+
+#### PSNR and SSIM(luma(Y) channels)
+![image](https://user-images.githubusercontent.com/58716946/208552766-35d1867e-bd60-4313-98ee-8fcb2253ec80.png)
+
+#### PSNR and SSIM(3YCrCb channels)
+![image](https://user-images.githubusercontent.com/58716946/208552824-8f8c1c34-7e5f-4b2e-9f09-98da3b618152.png)
 
 
 ### Test image   
