@@ -97,9 +97,6 @@ Sample Results
 #### SRGAN
 ![sample1_sr](https://github.com/Maggiking/SRGAN-PyTorch/blob/master/images/sample1_sr.png "SRGAN")   
 
-
-### Sample from the xView dataset   
-
 #### Bicubic
 ![sample2_lr](https://github.com/Maggiking/SRGAN-PyTorch/blob/master/images/sample2_lr.png "Bicubic")   
 
@@ -112,10 +109,10 @@ Sample Results
 #### SRGAN
 ![sample3_sr](https://github.com/Maggiking/SRGAN-PyTorch/blob/master/images/sample3_sr.png "SRGAN")   
 
-#### PSNR and SSIM(luma(Y) channels)
+### PSNR and SSIM(luma(Y) channels)
 ![image](https://user-images.githubusercontent.com/58716946/208552766-35d1867e-bd60-4313-98ee-8fcb2253ec80.png)
 
-#### PSNR and SSIM(3YCrCb channels)
+### PSNR and SSIM(3YCrCb channels)
 ![image](https://user-images.githubusercontent.com/58716946/208552824-8f8c1c34-7e5f-4b2e-9f09-98da3b618152.png)
 
 
@@ -127,7 +124,15 @@ Sample Results
 #### Low Res | SRGAN | Ground Truth
 ![image](https://user-images.githubusercontent.com/58716946/208553111-7b22c473-3c03-48be-8ca0-24c6203ddbbb.png)
 
-
+Observation and Results
+----------------------------
+1.SRGAN needs to be trained for more epochs (>10,000).
+2.Training devices should not affect loss convergence.
+3.PSNR and SSIM do not reflect perceived image quality, image quality is subjective.
+4.DDP is significantly faster than DP for single node multi-GPU training. It also allows training across multiple nodes.
+5.Pytorch Lightning offers even better scaling efficiency. Lightning w/ 2 GPUs is as fast as DDP w/ 4 GPUs.
+6.Scaling efficiency depends on optimization. Lightning is highly optimized for distributed training, also works well with SLURM.
+7.Performance difference between our DDP and Lightning may be partially caused by different communication backend. We used GLOO and Lightning uses NCCL which may be more suitable for the HPC clusters.
 
 
 
