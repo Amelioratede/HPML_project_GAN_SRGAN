@@ -121,11 +121,11 @@ Sample Results
 
 ### Test image   
 
-#### Low Res
-![nya_lr](https://github.com/Maggiking/SRGAN-PyTorch/blob/master/images/nya_lr.png "Low Resolution")   
+#### Low Res | SRGAN | Ground Truth
+![image](https://user-images.githubusercontent.com/58716946/208553045-5c9d8286-dca1-4091-b244-3a09b6a0f2a7.png)
 
-#### SRGAN
-![nya_sr](https://github.com/Maggiking/SRGAN-PyTorch/blob/master/images/nya_sr.png "SRGAN")   
+#### Low Res | SRGAN | Ground Truth
+![image](https://user-images.githubusercontent.com/58716946/208553111-7b22c473-3c03-48be-8ca0-24c6203ddbbb.png)
 
 
 
